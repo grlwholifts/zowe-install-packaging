@@ -261,10 +261,10 @@
 		<weight>1</weight>
 		<autoEnable>true</autoEnable>
 		<canMarkAsFailed>false</canMarkAsFailed>
-		<template>                                                               
+		<template>
 	    <inlineTemplate substitution="true">###./ZWEWRF02.vtl###</inlineTemplate>
 			<submitAs maxRc="0">JCL</submitAs>
 			<maxLrecl>80</maxLrecl>
 		</template>
 	</step>
-</workflow> 
+</workflow>
