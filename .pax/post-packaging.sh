@@ -56,6 +56,7 @@ chmod -R 755 smpe
 
 PAX_PATH="${CURR_PWD}/smpe/pax"
 ZOSMF_PATH="${CURR_PWD}/smpe/ZOSMF"
+FILES_PATH="${CURR_PWD}/files"
 
 # generate boilerplate SMPE JCL
 MVS_PATH="${PAX_PATH}/MVS"        # output
@@ -82,15 +83,30 @@ cd ${ZOSMF_PATH}   # required, smpe_workflow.xml has ./vtls references
 ./build-workflow.rex -d -i ./smpe_workflow.xml -o ${USS_PATH}/ZWEWRF01.xml
 cd ${CURR_PWD}
 
-# TODO: generate boilerplate SECURITY JCL
+# generate boilerplate SECURITY JCL
+JCL_PATH="${FILES_PATH}/jcl"        # output
+LOCAL_PATH="${FILES_PATH}/vtl/ZWESECUR"   # input
+VTLCLI_PATH="/ZOWE/vtl-cli"       # tool
+for entry in $(ls ${LOCAL_PATH}/)
+do
+  if [ "${entry##*.}" = "vtl" ]          # keep from last . (exclusive)
+  then
+    BASE=${entry%.*}                    # keep up to last . (exclusive)
+    VTL="${LOCAL_PATH}/${entry}"
+    YAML="${LOCAL_PATH}/${BASE}.yml"
+    JCL="${JCL_PATH}/${BASE}.jcl"
+    # assumes java is in $PATH
+    java -jar ${VTLCLI_PATH}/vtl-cli.jar -ie Cp1140 --yaml-context ${YAML} ${VTL} -o ${JCL} -oe Cp1140
+  fi
+done
 
 # generate SECURITY workflow
-# USS_PATH="${PAX_PATH}/workflows"        # output
-# LOCAL_PATH="${ZOSMF_PATH}/vtls"   # input
-# cp ${LOCAL_PATH}/ZWEYML01.yml ${USS_PATH}/ZOWE_SECURITY_VIF.yml
-# cd ${ZOSMF_PATH}   # required, smpe_workflow.xml has ./vtls references
-# ./build-workflow.rex -d -i ./security_workflow.xml -o ${USS_PATH}/ZOWE_SECURITY_WORKFLOW.xml
-# cd ${CURR_PWD}
+WORKFLOW_PATH="${FILES_PATH}/workflows"       # output
+LOCAL_PATH="${FILES_PATH}/vtl/ZWESECUR"   # input
+cp ${LOCAL_PATH}/ZWEYML01.yml ${WORKFLOW_PATH}/ZOWE_SECURITY_VIF.yml
+cd ${ZOSMF_PATH}   # required, smpe_workflow.xml has ./vtls references
+./build-workflow.rex -d -i ./security_workflow.xml -o ${WORKFLOW_PATH}/ZOWE_SECURITY_WORKFLOW.xml
+cd ${CURR_PWD}
 
 # create smpe.pax
 cd ${CURR_PWD}/smpe/pax
