@@ -103,9 +103,10 @@ done
 # generate SECURITY workflow
 WORKFLOW_PATH="${FILES_PATH}/workflows"       # output
 LOCAL_PATH="${FILES_PATH}/vtl/ZWESECUR"   # input
-cp ${LOCAL_PATH}/ZWEYML01.yml ${WORKFLOW_PATH}/ZOWE_SECURITY_VIF.yml
+SECURWF_TEMPLATE="${LOCAL_PATH}/vtl/ZWEWRF02.xml"
+cp ${LOCAL_PATH}/ZWEYML02.yml ${WORKFLOW_PATH}/ZOWE_SECURITY_VIF.yml
 cd ${ZOSMF_PATH}   # required, smpe_workflow.xml has ./vtls references
-./build-workflow.rex -d -i ./security_workflow.xml -o ${WORKFLOW_PATH}/ZOWE_SECURITY_WORKFLOW.xml
+./build-workflow.rex -d -i ${SECURWF_TEMPLATE} -o ${WORKFLOW_PATH}/ZOWE_SECURITY_WORKFLOW.xml
 cd ${CURR_PWD}
 
 # create smpe.pax
