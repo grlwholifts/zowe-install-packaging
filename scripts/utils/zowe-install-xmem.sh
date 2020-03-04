@@ -63,6 +63,8 @@ EndOfUsage
 script_exit 1
 fi
 
+echo $@
+set -x
 authlib=$1.SZWEAUTH | tr a-z A-Z 
 loadlib=`echo $2 | tr '[:lower:]' '[:upper:]'`
 samplib=`echo $1.SZWESAMP | tr '[:lower:]' '[:upper:]'`
@@ -74,12 +76,12 @@ then
 else
   proclib=auto
 fi 
-
-echo    "authlib =" $authlib >> $LOG_FILE
-echo    "loadlib =" $loadlib >> $LOG_FILE
-echo    "samplib =" $samplib >> $LOG_FILE
-echo    "parmlib =" $parmlib >> $LOG_FILE
-echo    "proclib =" $proclib >> $LOG_FILE
+set +x
+echo    "authlib =" $authlib
+echo    "loadlib =" $loadlib
+echo    "samplib =" $samplib
+echo    "parmlib =" $parmlib
+echo    "proclib =" $proclib
 
 for dsname in $authlib $loadlib $samplib $parmlib $proclib
 do
